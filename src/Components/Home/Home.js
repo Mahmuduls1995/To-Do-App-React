@@ -10,9 +10,7 @@ const Home = () => {
         const user = { name, message }
 
 
-        // const url=https://morning-waters-97427.herokuapp.com/task;
-
-        fetch("http://localhost:5000/task", {
+        fetch("https://morning-waters-97427.herokuapp.com/task", {
             method: 'POST', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -35,7 +33,7 @@ const Home = () => {
 
     const [tasks, setTasks] = useState([])
     useEffect(() => {
-        fetch('http://localhost:5000/task')
+        fetch('https://morning-waters-97427.herokuapp.com/task')
             .then((response) => response.json())
             .then((data) => setTasks(data));
     }, [tasks]);
@@ -46,7 +44,7 @@ const Home = () => {
         if (proceed) {
 
             console.log('deleting  user id', id);
-            const url = `http://localhost:5000/task/${id}`;
+            const url = `https://morning-waters-97427.herokuapp.com/task/${id}`;
             fetch(url, {
                 method: 'DELETE'
             })
@@ -54,35 +52,67 @@ const Home = () => {
                 .then(data => {
                     if (data.deletedCount > 0) {
                         console.log('deleted');
-                        const remaining = tasks.filter(product => product._id !== id);
+                        const remaining = tasks.filter(task => task._id !== id);
                         setTasks(remaining)
 
                     }
                 });
-        
-
         }
     }
 
-
-
-
     return (
-        <div className="flex mx-auto justify-between ">
+        <div className="mx-auto ml-1 justify-between mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 ">
 
+            <div className="relative w-full overflow-x-auto shadow-md sm:rounded-lg">
+                <table className="lg:w-full sm:w-full text-sm text-left text-gray-300 dark:text-gray-300">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-500 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" className="px-6 py-3">
+                                Name
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Description
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                <span className="">Delete</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-            <div className="mx-2 w-full">
+                        {
+                            tasks.map((task) => {
+                                return (<tr className="border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                        {task?.name}
+                                    </th>
+
+                                    <td className="px-6 py-4">
+                                        {task?.message}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <button onClick={() => handleUserDelete(task._id)} className="btn btn-primary rounded-md bg-green-600 p-1">Delete</button>
+                                    </td>
+                                </tr>)
+                            })
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div className="w-full ml-1">
                 <form onSubmit={handleAddUser}>
                     <div>
                         <span class="uppercase text-sm text-gray-600 font-bold">Full Name</span>
-                        <input class="w-full bg-gray-300 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"
+                        <input class="w-full bg-gray-300 text-gray-900 mt-1 p-3 rounded-lg focus:outline-none focus:shadow-outline"
                             type="text" name="name" placeholder="Full Name" />
                     </div>
 
                     <div class="mt-8">
                         <span class="uppercase text-sm text-gray-600 font-bold">Description</span>
                         <textarea
-                            class="w-full h-32 bg-gray-300 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline" name="message" type="text" placeholder="Message"></textarea>
+                            class="w-full h-32 bg-gray-300 text-gray-900 mt-1 p-3 rounded-lg focus:outline-none focus:shadow-outline" name="message" type="text" placeholder="Message"></textarea>
                     </div>
                     <div class="mt-8">
                         <button type="submit"
@@ -93,43 +123,6 @@ const Home = () => {
                 </form>
             </div>
 
-            <div className="relative mx-2 w-full overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="lg:w-full sm:w-full text-sm text-left text-gray-300 dark:text-gray-300">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                 Name
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Description
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                <span className="sr-only">Delete</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        {
-                            tasks.map((product) => {
-                                return (<tr className="border-b dark:bg-gray-800 dark:border-gray-700">
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        {product?.name}
-                                    </th>
-
-                                    <td className="px-6 py-4">
-                                        {product?.message}
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <button onClick={() => handleUserDelete(product._id)} className="btn btn-primary">Delete</button>
-                                    </td>
-                                </tr>)
-                            })
-                        }
-
-                    </tbody>
-                </table>
-            </div>
         </div>
     );
 };
